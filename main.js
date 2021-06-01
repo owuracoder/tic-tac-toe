@@ -1,63 +1,93 @@
-const gmeBrdObj = (function(pgSlctr) {
-    const _gameboard  = [['','',''],['','',''],['','','']]
+const gmeBrdObj = (function(){
+    let _gameboard  = [['','',''],['','',''],['','','']]
+    
+    // private variables
+    let containerElement = document.querySelector('.container')
 
-    // select all columns on the page
-    const slctAlCol = function (slctr) {
-        let allCols = document.querySelectorAll(slctr)
-        return allCols
+    let allRows = document.querySelectorAll('.rows')
+
+    // render on the board the items in the array
+    const rendrPge = function () {  
+        for(let i = 0; i < allRows.length; i++){           
+            for(let j = 0; j < allRows[i].childElementCount; j++){                
+                allRows[i].children[j].textContent = _gameboard[i][j]                
+            }
+        }
     }
 
+    return {rendrPge,containerElement,_gameboard,allRows}   
+})()
 
-    // render the items in the array
-    const rndrPg = function (contain) {
-        let container = document.querySelector(contain)
-        
-        let rows = container.querySelectorAll('.rows')
-        
-        for(let i = 0; i < rows.length; i++){
-            
-            for(let j = 0; j < rows[i].childElementCount; j++){
+
+
+const players = function(marker1,marker2){
+    let markerSign1 = marker1.slice(0,2)
+    let markerSign2 = marker2.slice(0,2)
+    let player1 = true
+    let player2 = false
+        const play = function(){
                 
-                rows[i].children[j].textContent = _gameboard[i][j]
+            const markHere = function(event){
+                function markMe(sign){
+                    let colId = event.target.id
+                    let parentId = event.target.parentElement.id
+                    let parentInt = parseInt(parentId)
+        
+                    let gameBoard = gmeBrdObj._gameboard
+                
+                    if(gameBoard[parentInt][colId] == ''){
+                        gameBoard[parentInt][colId] = sign
+                    }else if(gameBoard[parentInt][colId] == markerSign1 && player1 == true){
+                        player1 = false
+                        player2 = true
+                    } else if(gameBoard[parentInt][colId] == markerSign2 && player2 == false){
+                        player1 = true
+                        player2 = false
+                    }
+
+                    gmeBrdObj.rendrPge()
+                    let winAlgo = winOutcome()
+                    
+                    if(winAlgo == sign){
+                        for(let i = 0; i < selcPge.length; i++){
+                
+                            selcPge[i].removeEventListener('click',markHere)    
+                        }
+                    }
+
+                    if(player1 == true && player2 == false){
+                        player1 = false
+                        player2 = true
+                    } else if(player1 == false && player2 == true){
+                        player1 = true
+                        player2 = false
+                    }
+
+                }
+
+
+                if(player1 == true && player2 == false){
+                    markMe(markerSign1)
+                }else if(player1 == false && player2 == true) {
+                    markMe(markerSign2)
+                }         
+
+            }
+
+            let selcPge = gmeBrdObj.allRows
+            
+            for(let i = 0; i < selcPge.length; i++){
+                
+                selcPge[i].addEventListener('click',markHere)
                 
             }
         }
-  
-    }
 
-
-    // customise players name on the gameboard
-    const doCustPlyr = function(player1){
-        function execPly1(){
-            let form = document.createElement('form')
-            form.classList.add('form-style')
-            let input = document.createElement('input')
-            input.setAttribute('type','text')
-            input.setAttribute('placeholder','Player One Marker..')
-            input.classList.add('input-text')
-            let button = document.createElement('button')
-            button.innerHTML = '<i class="far fa-check-circle fa-lg"></i>'
-            button.classList.add('btn')
-            form.appendChild(input)
-            form.append(button)
-            let container = document.querySelector('.container')
-            let body = document.querySelector('body')
-            container.classList.add('change')
-            body.appendChild(form)
-
-            return {button,container,input,body,form}
-        }
-
-        let ply1Id = document.querySelector(player1)
-        ply1Id.addEventListener('click',execPly1)
-        
-    }
-
-
-
-    // check for a winner
-    const winAlgo = (function(){
+                
+        // check for a winner
         const winOutcome = function(){
+            let gameBoard = gmeBrdObj._gameboard
+
             const firstRow = []
             const secondRow = []
             const thirdRow = []
@@ -66,39 +96,41 @@ const gmeBrdObj = (function(pgSlctr) {
             const thirdCol = []
             const rgtDgnal = []
             const lftDgnal = []
-    
-            for(let i= 0; i < _gameboard.length; i++){
-                firstCol.push(_gameboard[i][0])
-                secCol.push(_gameboard[i][1])
-                thirdCol.push(_gameboard[i][2])
-    
-                for(let j= 0; j < _gameboard[i].length; j++){
+            
+            for(let i= 0; i < gameBoard.length; i++){
+                firstCol.push(gameBoard[i][0])
+                secCol.push(gameBoard[i][1])
+                thirdCol.push(gameBoard[i][2])
+
+                for(let j= 0; j < gameBoard[i].length; j++){
                     if( i == 0 && j == 2){
-                        lftDgnal.push(_gameboard[i][j])
-                      } else if( i == 1 && j == 1){
-                        lftDgnal.push(_gameboard[i][j])
-                      } else if( i == 2 && j == 0){
-                        lftDgnal.push(_gameboard[i][j])
-                      }
-                  
-                      if(i == 0 && j == 0){
-                        rgtDgnal.push(_gameboard[i][j])
-                      }else if(i == 1 && j== 1){
-                        rgtDgnal.push(_gameboard[i][i])
-                      }else if(i == 2 && j == 2){
-                        rgtDgnal.push(_gameboard[i][j])
-                      }
-    
+                        lftDgnal.push(gameBoard[i][j])
+                    } else if( i == 1 && j == 1){
+                        lftDgnal.push(gameBoard[i][j])
+                    } else if( i == 2 && j == 0){
+                        lftDgnal.push(gameBoard[i][j])
+                    }
+                
+                    if(i == 0 && j == 0){
+                        rgtDgnal.push(gameBoard[i][j])
+                    }else if(i == 1 && j== 1){
+                        rgtDgnal.push(gameBoard[i][i])
+                    }else if(i == 2 && j == 2){
+                        rgtDgnal.push(gameBoard[i][j])
+                    }
+
                     if(i == 0){
-                    firstRow.push(_gameboard[i][j])
+                    firstRow.push(gameBoard[i][j])
+                    
                     }else if( i == 1){
-                    secondRow.push(_gameboard[i][j])
+                    secondRow.push(gameBoard[i][j])
                     } else if (i == 2){
-                    thirdRow.push(_gameboard[i][j])
+                    thirdRow.push(gameBoard[i][j])
                     } 
                 }
             }
-    
+
+            
             
             let firstRowString = firstRow.join('')
             let secondRowString = secondRow.join('')
@@ -108,53 +140,104 @@ const gmeBrdObj = (function(pgSlctr) {
             let thirdColString = thirdCol.join('')
             let rgtDgnalString = rgtDgnal.join('')
             let lftDgnalString = lftDgnal.join('')
-            
-    
-            if(firstRowString == 'xxx' || secondRowString == 'xxx' || thirdRowString == 'xxx' || firstColString == 'xxx' || secColString == 'xxx' || thirdColString == 'xxx' || rgtDgnalString == 'xxx' || lftDgnalString == 'xxx'){
-                return 'x'
-            } else if(firstRowString == 'ooo' || secondRowString == 'ooo' || thirdRowString == 'ooo' || firstColString == 'ooo' || secColString == 'ooo' || thirdColString == 'ooo' || rgtDgnalString == 'ooo' || lftDgnalString == 'ooo') {
-                return 'o'
-            }else if(!_gameboard[0].includes('') && !_gameboard[1].includes('') && !_gameboard[2].includes('')){
+
+            if(firstRowString == markerSign1.repeat(3) || secondRowString == markerSign1.repeat(3) || thirdRowString == markerSign1.repeat(3) || firstColString == markerSign1.repeat(3) || secColString == markerSign1.repeat(3) || thirdColString == markerSign1.repeat(3) || rgtDgnalString == markerSign1.repeat(3) || lftDgnalString == markerSign1.repeat(3)){
+                return markerSign1
+            }else if(firstRowString == markerSign2.repeat(3) || secondRowString == markerSign2.repeat(3) || thirdRowString == markerSign1.repeat(3) || firstColString == markerSign2.repeat(3) || secColString == markerSign2.repeat(3) || thirdColString == markerSign2.repeat(3) || rgtDgnalString == markerSign2.repeat(3) || lftDgnalString == markerSign2.repeat(3)){
+                return markerSign2
+            }
+            else if(!gameBoard[0].includes('') && !gameBoard[1].includes('') && !gameBoard[2].includes('')){
                 return 'tie'
             }
-
-        }
-        return {winOutcome}
-    })()
-
-
-    // Users add marks
-    const addMarks = function(marker1, marker2){
-        let switchBlock = true
-        const markHere = function(event){
-            
-            let colId = event.target.id
-            let parentId = event.target.parentElement.id
-            let parentInt = parseInt(parentId)
-
-            if(_gameboard[parentInt][colId] == '' && switchBlock == true){
-                 _gameboard[parentInt][colId] = marker1
-                 switchBlock = false
-            } else if(_gameboard[parentInt][colId] == '' && switchBlock == false){
-                _gameboard[parentInt][colId] = marker2
-                 switchBlock = true
-            }
-            rndrPg('.container')
-            winAlgo.winOutcome()
-         }
-
-        let selcPg = slctAlCol(pgSlctr)
-
-        for(let i = 0; i < selcPg.length; i++){
-            selcPg[i].addEventListener('click',markHere)
         }
 
-    }
+    return {play}
+}
 
-    return {addMarks,doCustPlyr}
-})('.col')
+const playGame = (function(){
+    gmeBrdObj.rendrPge()
+     
+    let round = players('suzy','Richard')
+    round.play()
+   
+})()
 
-gmeBrdObj.addMarks('x','o')
-gmeBrdObj.doCustPlyr('#player1')
+playGame
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const doCustPlyr = function(){
+
+
+//     const custNmes = function(){
+//         let input = document.querySelector('#inpt')
+//         let inptVal = input.value
+//         console.log(inptVal)
+//     }
+
+//     const execPly1 = function(){
+//         let form = document.createElement('form')
+//             form.classList.add('form-style')
+//             let input = document.createElement('input')
+//             input.id = 'inpt'
+//             input.setAttribute('type','text')
+//             input.setAttribute('placeholder','Player One Marker..')
+//             input.classList.add('input-text')
+//             let button = document.createElement('button')
+//             button.id = 'btn'
+//             button.innerHTML = '<i class="far fa-check-circle fa-lg"></i>'
+//             button.classList.add('btn')
+//             form.appendChild(input)
+//             form.append(button)
+//             let container = document.querySelector('.container')
+//             let body = document.querySelector('body')
+//             container.classList.add('change')
+//             body.appendChild(form)
+//             button.addEventListener('click',custNmes)
+//     }
+
+//     const showForms = function(player1,player2){
+//         let ply1Id = document.querySelector(player1)
+//         let ply2Id = document.querySelector(player2)
+//         ply1Id.addEventListener('click',execPly1)
+//         ply2Id.addEventListener('click',execPly1)
+//     }
+   
+//     return {showForms}
+// }
