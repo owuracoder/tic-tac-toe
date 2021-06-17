@@ -1,243 +1,184 @@
-const gmeBrdObj = (function(){
-    let _gameboard  = [['','',''],['','',''],['','','']]
+let gameBoardObj = function(){
+    let gameBoard = ['','','','','','','','','']
+
+    const boxes = document.querySelectorAll('.grid-item')
     
-    // private variables
-    let containerElement = document.querySelector('.container')
-
-    let allRows = document.querySelectorAll('.rows')
-
-    // render on the board the items in the array
-    const rendrPge = function () {  
-        for(let i = 0; i < allRows.length; i++){           
-            for(let j = 0; j < allRows[i].childElementCount; j++){                
-                allRows[i].children[j].textContent = _gameboard[i][j]                
-            }
+    let uIRender = function(){
+        for(let i=0; i < gameBoard.length; i++){
+            boxes[i].textContent = gameBoard[i]
         }
     }
 
-    return {rendrPge,containerElement,_gameboard,allRows}   
-})()
+    let reStartButton = function(player){
+        const button = document.createElement('button')
+        button.textContent = 'Restart'
+        button.classList.add('btn')
 
+        let winBanner = document.querySelector('.win_banner')
 
+        let header = document.querySelector('.head')
+        header.appendChild(button)
+        const reStartGame = function(){
+            winBanner.remove()
+            let clean_gamboard = gameBoard.map(x => x = '')
+            gameBoard = clean_gamboard
 
-const players = function(marker1,marker2){
-    let markerSign1 = marker1.slice(0,2)
-    let markerSign2 = marker2.slice(0,2)
-    let player1 = true
-    let player2 = false
-        const play = function(){
-                
-            const markHere = function(event){
-                function markMe(sign){
-                    let colId = event.target.id
-                    let parentId = event.target.parentElement.id
-                    let parentInt = parseInt(parentId)
+            uIRender()
+        }
+       
+        button.addEventListener('click',reStartGame)
+    }
+
+    let winBanner = function(mark,swch=false){
+        let winBanner = document.createElement('div')
+        let head = document.createElement('h2')
+        if(swch==false){
+            head.textContent = `${mark} is the winner`
+        }else if(swch==true){
+            head.textContent = `${mark}`
+        }
         
-                    let gameBoard = gmeBrdObj._gameboard
-                
-                    if(gameBoard[parentInt][colId] == ''){
-                        gameBoard[parentInt][colId] = sign
-                    }else if(gameBoard[parentInt][colId] == markerSign1 && player1 == true){
-                        player1 = false
-                        player2 = true
-                    } else if(gameBoard[parentInt][colId] == markerSign2 && player2 == false){
-                        player1 = true
-                        player2 = false
-                    }
+        head.classList.add('head')
+        winBanner.classList.add('win_banner')
+        winBanner.appendChild(head)
 
-                    gmeBrdObj.rendrPge()
-                    let winAlgo = winOutcome()
-                    
-                    if(winAlgo == sign){
-                        for(let i = 0; i < selcPge.length; i++){
-                
-                            selcPge[i].removeEventListener('click',markHere)    
-                        }
-                    }
+        let gridContainer = document.querySelector('.grid-container')
+        let container = document.querySelector('.container')
+        container.insertBefore(winBanner,gridContainer)
 
-                    if(player1 == true && player2 == false){
-                        player1 = false
-                        player2 = true
-                    } else if(player1 == false && player2 == true){
-                        player1 = true
-                        player2 = false
-                    }
+    }
 
-                }
-
-
-                if(player1 == true && player2 == false){
-                    markMe(markerSign1)
-                }else if(player1 == false && player2 == true) {
-                    markMe(markerSign2)
-                }         
-
+    let gameOverTester = function(){    
+        let spaces = gameBoard.length
+        gameBoard.forEach(function(elem){
+            if(elem != ''){
+                spaces--
             }
-
-            let selcPge = gmeBrdObj.allRows
-            
-            for(let i = 0; i < selcPge.length; i++){
-                
-                selcPge[i].addEventListener('click',markHere)
-                
-            }
+        })
+        if(spaces == 0){
+           return true
         }
 
-                
-        // check for a winner
-        const winOutcome = function(){
-            let gameBoard = gmeBrdObj._gameboard
+    }
 
-            const firstRow = []
-            const secondRow = []
-            const thirdRow = []
-            const firstCol = []
-            const secCol = []
-            const thirdCol = []
-            const rgtDgnal = []
-            const lftDgnal = []
+    let addMarks = function(){
+        let switches = 0
+
+        let player = playerObj()
+
+        let player1 = player.player1
+        let player2 = player.player2
+
+        let checkHere = function(e){
             
-            for(let i= 0; i < gameBoard.length; i++){
-                firstCol.push(gameBoard[i][0])
-                secCol.push(gameBoard[i][1])
-                thirdCol.push(gameBoard[i][2])
-
-                for(let j= 0; j < gameBoard[i].length; j++){
-                    if( i == 0 && j == 2){
-                        lftDgnal.push(gameBoard[i][j])
-                    } else if( i == 1 && j == 1){
-                        lftDgnal.push(gameBoard[i][j])
-                    } else if( i == 2 && j == 0){
-                        lftDgnal.push(gameBoard[i][j])
-                    }
-                
-                    if(i == 0 && j == 0){
-                        rgtDgnal.push(gameBoard[i][j])
-                    }else if(i == 1 && j== 1){
-                        rgtDgnal.push(gameBoard[i][i])
-                    }else if(i == 2 && j == 2){
-                        rgtDgnal.push(gameBoard[i][j])
-                    }
-
-                    if(i == 0){
-                    firstRow.push(gameBoard[i][j])
+            if(switches == 0){
+                player1Wins = ''
+                if(e.target.textContent == ''){
+                    e.target.textContent = player.firPlayr
+                    gameBoard[e.target.id] = player.firPlayr
+                    player1.push(parseInt(e.target.id))
+                    console.log('player1',player1)
+                    player1Wins = player.winAlgo(player1)
                     
-                    }else if( i == 1){
-                    secondRow.push(gameBoard[i][j])
-                    } else if (i == 2){
-                    thirdRow.push(gameBoard[i][j])
-                    } 
+                    let gameIsOver = gameOverTester()
+                    if(player1Wins){
+                        player1 = []
+                        player2 = []
+                        winBanner(player.firPlayr)
+                        reStartButton()
+                    }else if(gameIsOver){
+                        let text = 'Game Is Over'
+                        winBanner(text,swch=true)
+                    }        
+                    
                 }
+                if(player1Wins){
+                    switches = 0
+                }else {
+                    switches = 1
+                }
+            }else if(switches == 1){
+                player2Wins = ''
+                if(e.target.textContent == ''){
+                    e.target.textContent = player.secPlayr
+                    gameBoard[e.target.id] = player.secPlayr
+                    player2.push(parseInt(e.target.id))
+                    console.log('player2',player2)
+                    player2Wins = player.winAlgo(player2)
+                    let gameIsOver = gameOverTester()
+                    if(player2Wins){
+                        
+                        player1 = []
+                        player2 = []
+                        winBanner(player.secPlayr)
+                        reStartButton() 
+                    }else if(gameIsOver){
+                        player1 = []
+                        player2 = []
+                        let text = 'Game Is Over'
+                        winBanner(text,swch=true)
+                        reStartButton()
+                    }
+                    
+                }
+                if(player2Wins){
+                    switches = 1
+                } else {
+                    switches = 0
+                }
+                
             }
 
-            
-            
-            let firstRowString = firstRow.join('')
-            let secondRowString = secondRow.join('')
-            let thirdRowString = thirdRow.join('')
-            let firstColString = firstCol.join('')
-            let secColString = secCol.join('')
-            let thirdColString = thirdCol.join('')
-            let rgtDgnalString = rgtDgnal.join('')
-            let lftDgnalString = lftDgnal.join('')
-
-            if(firstRowString == markerSign1.repeat(3) || secondRowString == markerSign1.repeat(3) || thirdRowString == markerSign1.repeat(3) || firstColString == markerSign1.repeat(3) || secColString == markerSign1.repeat(3) || thirdColString == markerSign1.repeat(3) || rgtDgnalString == markerSign1.repeat(3) || lftDgnalString == markerSign1.repeat(3)){
-                return markerSign1
-            }else if(firstRowString == markerSign2.repeat(3) || secondRowString == markerSign2.repeat(3) || thirdRowString == markerSign1.repeat(3) || firstColString == markerSign2.repeat(3) || secColString == markerSign2.repeat(3) || thirdColString == markerSign2.repeat(3) || rgtDgnalString == markerSign2.repeat(3) || lftDgnalString == markerSign2.repeat(3)){
-                return markerSign2
-            }
-            else if(!gameBoard[0].includes('') && !gameBoard[1].includes('') && !gameBoard[2].includes('')){
-                return 'tie'
-            }
+              
+              
         }
 
-    return {play}
+        boxes.forEach(function(box){
+            box.addEventListener('click',checkHere)
+        })
+
+    }
+    
+    return {uIRender,addMarks}
 }
 
-const playGame = (function(){
-    gmeBrdObj.rendrPge()
+let playerObj = function(){
+    let firPlayr = 'x'
+    let secPlayr = 'o'
+    const winnings = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
      
-    let round = players('suzy','Richard')
-    round.play()
-   
+    let player1 = []
+    let player2 = []
+
+    const winAlgo = function(board){
+        for(let i = 0; i < winnings.length; i++){
+            let result = winnings[i].every(elem => board.includes(elem))
+            if(result == true){
+              return true
+            }
+           }
+    }
+
+    return{firPlayr,secPlayr,player1,player2,winAlgo}
+}
+
+let controlObj = (function(){
+    
+
+    let init = function(){
+
+    let rendering = gameBoardObj()
+    rendering.uIRender()
+
+    let markHere = gameBoardObj()
+
+    
+    markHere.addMarks()
+
+    }       
+
+    return {init}
+     
 })()
 
-playGame
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const doCustPlyr = function(){
-
-
-//     const custNmes = function(){
-//         let input = document.querySelector('#inpt')
-//         let inptVal = input.value
-//         console.log(inptVal)
-//     }
-
-//     const execPly1 = function(){
-//         let form = document.createElement('form')
-//             form.classList.add('form-style')
-//             let input = document.createElement('input')
-//             input.id = 'inpt'
-//             input.setAttribute('type','text')
-//             input.setAttribute('placeholder','Player One Marker..')
-//             input.classList.add('input-text')
-//             let button = document.createElement('button')
-//             button.id = 'btn'
-//             button.innerHTML = '<i class="far fa-check-circle fa-lg"></i>'
-//             button.classList.add('btn')
-//             form.appendChild(input)
-//             form.append(button)
-//             let container = document.querySelector('.container')
-//             let body = document.querySelector('body')
-//             container.classList.add('change')
-//             body.appendChild(form)
-//             button.addEventListener('click',custNmes)
-//     }
-
-//     const showForms = function(player1,player2){
-//         let ply1Id = document.querySelector(player1)
-//         let ply2Id = document.querySelector(player2)
-//         ply1Id.addEventListener('click',execPly1)
-//         ply2Id.addEventListener('click',execPly1)
-//     }
-   
-//     return {showForms}
-// }
+controlObj.init()
