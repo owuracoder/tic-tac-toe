@@ -9,7 +9,7 @@ let gameBoardObj = function(){
         }
     }
 
-    let reStartButton = function(player){
+    let reStartButton = function(){
         const button = document.createElement('button')
         button.textContent = 'Restart'
         button.classList.add('btn')
@@ -62,75 +62,68 @@ let gameBoardObj = function(){
     }
 
     let addMarks = function(){
-        let switches = 0
-
         let player = playerObj()
-
         let player1 = player.player1
         let player2 = player.player2
+        let player1Wins = ''
+        let player2Wins = ''
+        let cycleMe = true
 
         let checkHere = function(e){
             
-            if(switches == 0){
-                player1Wins = ''
-                if(e.target.textContent == ''){
-                    e.target.textContent = player.firPlayr
-                    gameBoard[e.target.id] = player.firPlayr
-                    player1.push(parseInt(e.target.id))
-                    console.log('player1',player1)
-                    player1Wins = player.winAlgo(player1)
-                    
-                    let gameIsOver = gameOverTester()
-                    if(player1Wins){
-                        player1 = []
-                        player2 = []
-                        winBanner(player.firPlayr)
-                        reStartButton()
-                    }else if(gameIsOver){
-                        let text = 'Game Is Over'
-                        winBanner(text,swch=true)
-                    }        
-                    
-                }
+            if(e.target.textContent == ''){
+                e.target.textContent = player.firPlayr
+                gameBoard[e.target.id] = player.firPlayr
+                player1.push(parseInt(e.target.id))
+                console.log('player1',player1)
+                player1Wins = player.winAlgo(player1)
+                let gameIsOver = gameOverTester()
                 if(player1Wins){
-                    switches = 0
-                }else {
-                    switches = 1
+                    player1 = []
+                    player2 = []
+                    winBanner(player.firPlayr)
+                    reStartButton()
+                }else if(gameIsOver){
+                    let text = 'Game Is Over'
+                    winBanner(text,swch=true)
                 }
-            }else if(switches == 1){
-                player2Wins = ''
-                if(e.target.textContent == ''){
-                    e.target.textContent = player.secPlayr
-                    gameBoard[e.target.id] = player.secPlayr
-                    player2.push(parseInt(e.target.id))
-                    console.log('player2',player2)
-                    player2Wins = player.winAlgo(player2)
-                    let gameIsOver = gameOverTester()
-                    if(player2Wins){
-                        
-                        player1 = []
-                        player2 = []
-                        winBanner(player.secPlayr)
-                        reStartButton() 
-                    }else if(gameIsOver){
-                        player1 = []
-                        player2 = []
-                        let text = 'Game Is Over'
-                        winBanner(text,swch=true)
-                        reStartButton()
-                    }
-                    
-                }
-                if(player2Wins){
-                    switches = 1
-                } else {
-                    switches = 0
-                }
-                
             }
+            
+            //    end of the event listener
+            if(!player1Wins){
+                let randomDiv = ''
+                let randNum = ''
+                while(cycleMe){
+                    randNum =  Math.floor(Math.random() * 9)
+                    randomDiv = document.getElementById(`${randNum}`)
 
-              
-              
+                    if(randomDiv.textContent == ''){
+                    cycleMe = false
+                    }
+                }
+                cycleMe = true
+
+                randomDiv.textContent = player.secPlayr
+                gameBoard[randNum] = player.secPlayr
+                player2.push(parseInt(randNum))
+                console.log('player2',player2)
+                player2Wins = player.winAlgo(player2)
+                let gameIsOver = gameOverTester()
+                if(player2Wins){   
+                    player1 = []
+                    player2 = []
+                    winBanner(player.secPlayr)
+                    reStartButton() 
+                }else if(gameIsOver){
+                    player1 = []
+                    player2 = []
+                    let text = 'Game Is Over'
+                    winBanner(text,swch=true)
+                    reStartButton()
+                }
+            }
+            
+                
         }
 
         boxes.forEach(function(box){
@@ -166,14 +159,11 @@ let controlObj = (function(){
     
 
     let init = function(){
+        
+        let game = gameBoardObj()
 
-    let rendering = gameBoardObj()
-    rendering.uIRender()
-
-    let markHere = gameBoardObj()
-
-    
-    markHere.addMarks()
+        game.addMarks()
+        game.uIRender()
 
     }       
 
