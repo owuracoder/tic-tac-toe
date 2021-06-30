@@ -36,10 +36,9 @@
   border-right: none;
 }
 
-.container {
+.main-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   height: 100vh;
   width: 100vw;
   background: linear-gradient(
@@ -47,6 +46,23 @@
     rgba(230, 100, 101, 0.5),
     rgba(145, 152, 229, 0.5)
   );
+  overflow-y: hidden;
+}
+
+.main-container .head-box {
+  padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 
 .win_banner {
