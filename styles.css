@@ -46,6 +46,8 @@
     rgba(230, 100, 101, 0.5),
     rgba(145, 152, 229, 0.5)
   );
+  justify-content: center;
+  align-items: center;
   overflow-y: hidden;
 }
 
