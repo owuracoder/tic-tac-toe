@@ -51,23 +51,26 @@ let gameBoardObj = function(){
             return {score:0};
         }
 
-        // an array to collect all the objects
         let moves = [];
 
-        // loop through available spots
         for (let i = 0; i < availSpots.length; i++){
-            //create an object for each and store the index of that spot 
+
             let move = {};
+            
             move.index = newBoard[availSpots[i]];
             
             newBoard[availSpots[i]] = player;
 
             if (player == aiPlayer){
+
                 let result = minimax(newBoard, huPlayer);
+
                 move.score = result.score;
             }
             else{
+
                 let result = minimax(newBoard, aiPlayer);
+
                 move.score = result.score;
             }
 
@@ -224,6 +227,11 @@ let gameBoardObj = function(){
         let player2Wins = ''
 
         let checkHere = function(e){
+
+        // toggle activte styling
+
+            let playerActive = document.querySelector('.player-mark')
+            playerActive.classList.add('active')
             
             if(e.target.textContent == ''){
 
@@ -232,9 +240,6 @@ let gameBoardObj = function(){
                 gameBoard[e.target.id] = player.firPlayr
 
                 player1.push(parseInt(e.target.id))
-                
-                // checking discrepancies in x wins
-                console.log('current plays',player1)
 
                 player1Wins = player.winAlgo(player1)
 

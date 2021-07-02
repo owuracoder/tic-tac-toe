@@ -95,3 +95,34 @@
   font-size: 20px;
   margin-top: 20px;
 }
+
+.head-box {
+  margin-bottom: 10px;
+}
+
+.play-markers {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.play-markers .player-mark,
+.ai-mark {
+  width: 20%;
+  text-align: center;
+  padding: 10px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.player-mark {
+  background: rgba(115, 175, 224, 0.4);
+  color: #fff;
+}
+
+.ai-mark {
+  background: rgba(92, 160, 192, 0.4);
+  color: #fff;
+}
