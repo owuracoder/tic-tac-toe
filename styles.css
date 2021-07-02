@@ -7,9 +7,20 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  height: 60%;
-  width: 40%;
+  height: 90%;
+  width: 90%;
   cursor: pointer;
+}
+
+@media screen and (min-width: 600px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    height: 80%;
+    width: 50%;
+    cursor: pointer;
+  }
 }
 
 .grid-item {
@@ -17,7 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 70px;
 }
 
 .top {
@@ -52,11 +63,12 @@
 }
 
 .main-container .head-box {
-  padding-top: 30px;
+  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 30px;
+  justify-content: center;
+  padding-top: 20px;
+  font-size: 25px;
 }
 
 .container {
@@ -65,6 +77,7 @@
   justify-content: center;
   height: 100%;
   width: 100%;
+  margin: 40px;
 }
 
 .win_banner {
@@ -96,10 +109,6 @@
   padding: 0px;
   font-size: 20px;
   margin-top: 20px;
-}
-
-.head-box {
-  margin-bottom: 10px;
 }
 
 .play-markers {
